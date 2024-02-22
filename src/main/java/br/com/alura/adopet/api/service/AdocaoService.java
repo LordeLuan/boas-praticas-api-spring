@@ -1,6 +1,5 @@
 package br.com.alura.adopet.api.service;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -46,12 +45,8 @@ public class AdocaoService {
 //		sendo cada implementação de validação diferente uma da outra
 		validacoes.forEach(x -> x.validar(dto));
 		
-		Adocao adocao = new Adocao();
-		adocao.setTutor(tutor);
-		adocao.setPet(pet);
-		adocao.setMotivo(dto.motivo());
-		adocao.setData(LocalDateTime.now());
-		adocao.setStatus(StatusAdocao.AGUARDANDO_AVALIACAO);
+//		Usando contrutor para encapsular getters e setter
+		Adocao adocao = new Adocao(tutor, pet, dto.motivo());
 		repository.save(adocao);
 
 		String emailBody = "Olá " + adocao.getPet().getAbrigo().getNome()
@@ -62,7 +57,7 @@ public class AdocaoService {
 
 	public void aprovar(AprovacaoAdocaoDto dto) {
 		Adocao adocao = repository.getReferenceById(dto.id());
-		adocao.setStatus(StatusAdocao.APROVADO);
+		adocao.marcarComoAprovado();
 		repository.save(adocao);
 
 		String emailBody = "Parabéns " + adocao.getTutor().getNome() + "Sua adoção do pet " + adocao.getPet().getNome()
@@ -74,8 +69,7 @@ public class AdocaoService {
 
 	public void reprovar(ReprovacaoAdocaoDto dto) {
 		Adocao adocao = repository.getReferenceById(dto.id());
-		adocao.setStatus(StatusAdocao.REPROVADO);
-		adocao.setJustificativaStatus(dto.justificava());
+		adocao.marcarComoReprovado(dto.justificava());
 		repository.save(adocao);
 
 		String emailBody = "Olá " + adocao.getTutor().getNome() + "Infelizmente sua adoção do pet "
