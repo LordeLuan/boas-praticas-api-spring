@@ -1,6 +1,7 @@
 package br.com.alura.adopet.api.service;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import br.com.alura.adopet.api.dto.CadastrarPetDto;
@@ -11,9 +12,10 @@ import br.com.alura.adopet.api.model.TipoPet;
 class CalculadoraProbabilidadeAdocaoTest {
 
 	@Test
-	void cenario01() {
+	void petComIdadoBaixaEPesoBaixo() {
 	    //idade 4 anos e 4kg - ALTA
 		
+//		ARRANGE / ARRUMANDO
 	    Pet pet = new Pet(new CadastrarPetDto(
 	            TipoPet.GATO,
 	            "Miau",
@@ -24,13 +26,17 @@ class CalculadoraProbabilidadeAdocaoTest {
 	    ));
 
 	    CalculadoraProbabilidadeAdocao calculadora = new CalculadoraProbabilidadeAdocao();
+	    
+//	    ACT / EXECUTA
 	    ProbabilidadeAdocao probabilidade = calculadora.calcular(pet);
 
+//	    ASSERT / VALLIDA O RETORNO
 	    Assertions.assertEquals(ProbabilidadeAdocao.ALTA, probabilidade);
 	}
 	
+	@DisplayName("Descrição do teste")
 	@Test
-	void cenario02() {
+	void petComIdadoAltaEPesoBaixo() {
 		//idade 15 anos e 4kg - MEDIA
 		
 		Pet pet = new Pet(new CadastrarPetDto(
