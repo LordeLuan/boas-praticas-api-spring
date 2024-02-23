@@ -1,148 +1,155 @@
 package br.com.alura.adopet.api.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 import java.util.Objects;
+
+import br.com.alura.adopet.api.dto.CadastrarPetDto;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "pets")
 public class Pet {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    @Column(name = "tipo")
-    private TipoPet tipo;
+	@Enumerated(EnumType.STRING)
+	private TipoPet tipo;
 
-    @NotBlank
-    @Column(name = "nome")
-    private String nome;
+	private String nome;
 
-    @NotBlank
-    @Column(name = "raca")
-    private String raca;
+	private String raca;
 
-    @NotNull
-    @Column(name = "idade")
-    private Integer idade;
+	private Integer idade;
 
-    @NotBlank
-    @Column(name = "cor")
-    private String cor;
+	private String cor;
 
-    @NotNull
-    @Column(name = "peso")
-    private Float peso;
+	private Float peso;
 
-    @Column(name = "adotado")
-    private Boolean adotado;
+	private Boolean adotado;
 
-    @ManyToOne
-    @JsonBackReference("abrigo_pets")
-    @JoinColumn(name = "abrigo_id")
-    private Abrigo abrigo;
+	@ManyToOne
+	@JoinColumn(name = "abrigo_id")
+	private Abrigo abrigo;
 
-    @OneToOne(mappedBy = "pet")
-    @JsonBackReference("adocao_pets")
-    private Adocao adocao;
+	@OneToOne(mappedBy = "pet")
+	private Adocao adocao;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pet pet = (Pet) o;
-        return Objects.equals(id, pet.id);
-    }
+	public Pet() {
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+	public Pet(CadastrarPetDto dto) {
+		this.tipo = dto.tipo();
+		this.nome = dto.nome();
+		this.raca = dto.raca();
+		this.idade = dto.idade();
+		this.cor = dto.cor();
+		this.peso = dto.peso();
+	}
 
-    public Long getId() {
-        return id;
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Pet pet = (Pet) o;
+		return Objects.equals(id, pet.id);
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 
-    public TipoPet getTipo() {
-        return tipo;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setTipo(TipoPet tipo) {
-        this.tipo = tipo;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public TipoPet getTipo() {
+		return tipo;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public void setTipo(TipoPet tipo) {
+		this.tipo = tipo;
+	}
 
-    public String getRaca() {
-        return raca;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public void setRaca(String raca) {
-        this.raca = raca;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public Integer getIdade() {
-        return idade;
-    }
+	public String getRaca() {
+		return raca;
+	}
 
-    public void setIdade(Integer idade) {
-        this.idade = idade;
-    }
+	public void setRaca(String raca) {
+		this.raca = raca;
+	}
 
-    public String getCor() {
-        return cor;
-    }
+	public Integer getIdade() {
+		return idade;
+	}
 
-    public void setCor(String cor) {
-        this.cor = cor;
-    }
+	public void setIdade(Integer idade) {
+		this.idade = idade;
+	}
 
-    public Float getPeso() {
-        return peso;
-    }
+	public String getCor() {
+		return cor;
+	}
 
-    public void setPeso(Float peso) {
-        this.peso = peso;
-    }
+	public void setCor(String cor) {
+		this.cor = cor;
+	}
 
-    public Boolean getAdotado() {
-        return adotado;
-    }
+	public Float getPeso() {
+		return peso;
+	}
 
-    public void setAdotado(Boolean adotado) {
-        this.adotado = adotado;
-    }
+	public void setPeso(Float peso) {
+		this.peso = peso;
+	}
 
-    public Abrigo getAbrigo() {
-        return abrigo;
-    }
+	public Boolean getAdotado() {
+		return adotado;
+	}
 
-    public void setAbrigo(Abrigo abrigo) {
-        this.abrigo = abrigo;
-    }
+	public void setAdotado(Boolean adotado) {
+		this.adotado = adotado;
+	}
 
-    public Adocao getAdocao() {
-        return adocao;
-    }
+	public Abrigo getAbrigo() {
+		return abrigo;
+	}
 
-    public void setAdocao(Adocao adocao) {
-        this.adocao = adocao;
-    }
+	public void setAbrigo(Abrigo abrigo) {
+		this.abrigo = abrigo;
+	}
+
+	public Adocao getAdocao() {
+		return adocao;
+	}
+
+	public void setAdocao(Adocao adocao) {
+		this.adocao = adocao;
+	}
 }
