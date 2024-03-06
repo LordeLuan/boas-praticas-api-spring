@@ -1,5 +1,6 @@
 package br.com.alura.adopet.api.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +15,13 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import br.com.alura.adopet.api.dto.AprovacaoAdocaoDto;
+import br.com.alura.adopet.api.dto.ReprovacaoAdocaoDto;
 import br.com.alura.adopet.api.dto.SolicitacaoAdocaoDto;
 import br.com.alura.adopet.api.model.Abrigo;
 import br.com.alura.adopet.api.model.Adocao;
 import br.com.alura.adopet.api.model.Pet;
+import br.com.alura.adopet.api.model.StatusAdocao;
 import br.com.alura.adopet.api.model.Tutor;
 import br.com.alura.adopet.api.repository.AdocaoRepository;
 import br.com.alura.adopet.api.repository.PetRepository;
@@ -57,8 +61,17 @@ class AdocaoServiceTest {
 
 	@Mock
 	private Abrigo abrigo;
+	
+	@Mock
+	private Adocao adocao;
 
 	private SolicitacaoAdocaoDto dto;
+	
+	@Mock
+	private AprovacaoAdocaoDto aprovacaoDto;
+	
+	@Mock
+	private ReprovacaoAdocaoDto reprovacaoDto;
 
 	@InjectMocks
 	private AdocaoService adocaoService;
@@ -111,6 +124,38 @@ class AdocaoServiceTest {
 		BDDMockito.then(validador1).should().validar(dto);
 		BDDMockito.then(validador2).should().validar(dto);
 	
+	}
+	
+	@Test
+	void deveriaAprovarAdocao() {
+		BDDMockito.given(repository.getReferenceById(aprovacaoDto.id())).willReturn(adocao);
+		BDDMockito.given(adocao.getTutor()).willReturn(tutor);
+		BDDMockito.given(adocao.getPet()).willReturn(pet);
+		BDDMockito.given(pet.getAbrigo()).willReturn(abrigo);
+		BDDMockito.given(adocao.getData()).willReturn(LocalDateTime.now());
+		
+		adocaoService.aprovar(aprovacaoDto);
+		
+//		Valida se o metodo save da classe AdocaoRepository foi chamado
+		BDDMockito.then(repository).should().save(adocaoCaptor.capture());
+//		Captura o valor passado para o metodo "salvar" dentro do metodo "adocaoService.aprovar"
+		Adocao adocaoSalva = adocaoCaptor.getValue();
+		
+		Assertions.assertEquals(StatusAdocao.APROVADO, adocaoSalva.getStatus());
+	}
+	
+	@Test
+	void deveriaRecusarAdocao() {
+		BDDMockito.given(repository.getReferenceById(reprovacaoDto.id())).willReturn(adocao);
+		BDDMockito.given(adocao.getTutor()).willReturn(tutor);
+		BDDMockito.given(adocao.getPet()).willReturn(pet);
+		BDDMockito.given(pet.getAbrigo()).willReturn(abrigo);
+		BDDMockito.given(adocao.getData()).willReturn(LocalDateTime.now());
+		
+		adocaoService.reprovar(reprovacaoDto);
+		
+//		Valida se o metodo save da classe AdocaoRepository foi chamado
+		BDDMockito.then(repository).should().save(adocao);
 	}
 
 }
