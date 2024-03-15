@@ -16,9 +16,9 @@ public class TutorService {
 	private TutorRepository repository;
 
 	public void cadastrar(CadastrarTutorDto dto) {
-		boolean telefoneJaCadastrado = repository.existsByTelefone(dto.telefone());
-		boolean emailJaCadastrado = repository.existsByEmail(dto.email());
-		if (telefoneJaCadastrado || emailJaCadastrado) {
+		boolean telefoneOuEmailJaCadastrado = repository.existsByTelefoneOrEmail(dto.telefone(), dto.email());
+		
+		if (telefoneOuEmailJaCadastrado) {
 			throw new ValidacaoException("Dados já cadastrados para outro tutor!");
 		}
 		Tutor tutor = new Tutor();
@@ -30,7 +30,7 @@ public class TutorService {
 
 	public void atualizar(AtualizarTutorDto dto) {
 		Tutor tutor = repository.getReferenceById(dto.idTutor());
-		tutor.atualizaDados(dto);
+		tutor.atualizarDados(dto);
 		repository.save(tutor);
 	}
 }

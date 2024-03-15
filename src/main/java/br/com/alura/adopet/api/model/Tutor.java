@@ -31,7 +31,7 @@ public class Tutor {
     @OneToMany(mappedBy = "tutor", fetch = FetchType.LAZY)
     private List<Adocao> adocoes;
 
-    public void atualizaDados(AtualizarTutorDto dto) {
+    public void atualizarDados(AtualizarTutorDto dto) {
     	this.nome = dto.nome();
     	this.telefone = dto.nome();
     	this.email = dto.email();

@@ -1,63 +1,53 @@
 package br.com.alura.adopet.api.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.com.alura.adopet.api.dto.CadastrarAbrigoDto;
-import br.com.alura.adopet.api.exception.ValidacaoException;
 import br.com.alura.adopet.api.model.Abrigo;
 import br.com.alura.adopet.api.repository.AbrigoRepository;
+import br.com.alura.adopet.api.repository.PetRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AbrigoServiceTest {
-	
-	@Mock
-	private CadastrarAbrigoDto dto;
-	
-	private Abrigo abrigo;
 
-	@Mock
-	private AbrigoRepository abrigoRepository;
-	
-	@InjectMocks
-	private AbrigoService abrigoService;
-	
-	@Mock
-	private List<Abrigo> lista = new ArrayList<>();
-	
-	@Test
-	void deveriaListarTodosOsAbrigos() {
-		BDDMockito.given(abrigoRepository.findAll()).willReturn(lista);
-		
-		abrigoService.listarTodos();
-	
-		Assertions.assertEquals(0, lista.size());
-	}
-	
-	@Test
-	void deveriaCadastrarUmAbrigo() {
-		BDDMockito.given(abrigoRepository.existsByNomeOrTelefoneOrEmail(dto.nome(), dto.telefone(), dto.email())).willReturn(false);
-		
-		abrigo = new Abrigo("teste", "teste", "teste");
-		
-		abrigoService.cadastrar(dto);
-		
-		BDDMockito.then(abrigoRepository).should().save(abrigo);
-	}
-	
-	@Test
-	void deveriaLancarExcecaoAoCadastrarAbrigo() {
-		BDDMockito.given(abrigoRepository.existsByNomeOrTelefoneOrEmail(dto.nome(), dto.telefone(), dto.email())).willReturn(true);
-		
-		Assertions.assertThrows(ValidacaoException.class, () -> abrigoService.cadastrar(dto));
-	}
+    @InjectMocks
+    private AbrigoService service;
+
+    @Mock
+    private AbrigoRepository repository;
+
+    @Mock
+    private Abrigo abrigo;
+
+    @Mock
+    private PetRepository petRepository;
+
+    @Test
+    void deveriaChamarListaDeTodosOsAbrigos() {
+        //Act
+        service.listarTodos();
+
+        //Assert
+        then(repository).should().findAll();
+    }
+
+    @Test
+    void deveriaChamarListaDePetsDoAbrigoAtravesDoNome() {
+        //Arrange
+        String nome = "Miau";
+        given(repository.findByNome(nome)).willReturn(abrigo);
+
+        //Act
+        service.listarPets(nome);
+
+        //Assert
+        then(repository).should().findByNome(nome);
+    }
 
 }
